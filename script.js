@@ -20,14 +20,13 @@ textarea.setAttribute('class', 'text-area');
 const keyboard = document.createElement('div');
 keyboard.setAttribute('class', 'keyboard');
 
-// Coздаем клавиатуру через цикл
-for (let i = 0; i < keys.length; i += 1) {
+// Coздаем клавиатуру через цикличный обход массива
+keys.forEach((keyRow) => {
   const keyboardRow = document.createElement('div');
   keyboardRow.setAttribute('class', 'keyboard__row');
 
-  for (let j = 0; j < keys[i].length; j += 1) {
+  keyRow.forEach((button) => {
     const key = document.createElement('button');
-    const button = keys[i][j];
     key.setAttribute('class', 'keyboard__button');
 
     if (button === 'CapsLock' || button === 'Enter' || button === 'Shift' || button === 'Backspace') {
@@ -38,13 +37,13 @@ for (let i = 0; i < keys.length; i += 1) {
       key.setAttribute('class', 'keyboard__button keyboard__button_space');
     }
 
-    key.textContent = `${keys[i][j]}`;
+    key.textContent = `${button}`;
 
     keyboardRow.appendChild(key);
-  }
+  });
 
   keyboard.appendChild(keyboardRow);
-}
+});
 
 // Добавляем клавиатуру и поле для ввода текста в контейнер;
 container.appendChild(textarea);
