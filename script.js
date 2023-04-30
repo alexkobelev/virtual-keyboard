@@ -49,13 +49,13 @@ const createKeyboardRow = (keyRow) => {
 
 function detectOS() {
   const userAgent = navigator.userAgent.toLowerCase();
-  const os = /mac/.test(userAgent) ? 'MacOS' : 'Windows';
+  const os = (userAgent.indexOf('mac') !== -1) ? 'MacOS' : 'Windows';
   return os;
 }
 
 function createOSInfoParagraph() {
   const osInfo = document.createElement('p');
-  osInfo.setAttribute('class', 'operation-system');
+  osInfo.setAttribute('class', 'text');
   osInfo.textContent = `This virtual keyboard was created on ${detectOS()}`;
   return osInfo;
 }
@@ -63,27 +63,31 @@ function createOSInfoParagraph() {
 function renderPage() {
   removeKeyboard();
 
-  const keys = (currentLayout === 'english' ? englishLayout : russianLayout);
-
+  const keyboardLayout = (currentLayout === 'english' ? englishLayout : russianLayout);
   const container = document.createElement('div');
-  container.setAttribute('class', 'container');
-
   const textarea = document.createElement('textarea');
-  textarea.setAttribute('class', 'text-area');
-
   const keyboard = document.createElement('div');
-  keyboard.setAttribute('class', 'keyboard');
+  const osInfoParagraph = createOSInfoParagraph();
+  const switchCombination = document.createElement('p');
+  const script = document.querySelector('.main-script');
 
-  keys.forEach((element) => keyboard.appendChild(createKeyboardRow(element)));
+  textarea.focus();
+
+  container.setAttribute('class', 'container');
+  textarea.setAttribute('class', 'text-area');
+  keyboard.setAttribute('class', 'keyboard');
+  switchCombination.setAttribute('class', 'text');
+
+  switchCombination.textContent = 'Press Shift + Alt to switch layout';
+
+  keyboardLayout.forEach((keyboardRow) => keyboard.appendChild(createKeyboardRow(keyboardRow)));
 
   container.appendChild(textarea);
   container.appendChild(keyboard);
-
-  const script = document.querySelector('.main-script');
-  document.body.insertBefore(container, script);
-
-  const osInfoParagraph = createOSInfoParagraph();
   container.appendChild(osInfoParagraph);
+  container.appendChild(switchCombination);
+
+  document.body.insertBefore(container, script);
 }
 
 const changeLanguage = () => {
