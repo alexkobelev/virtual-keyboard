@@ -67,3 +67,7 @@
 .keyboard__button_space {
   grid-column-end: span 7;
 }
+
+.operation-system {
+  font-family: 'Courier New', Courier, monospace;
+}
