@@ -24,80 +24,103 @@ const removeKeyboard = () => {
   }
 };
 
-const createButton = (button) => {
-  const key = document.createElement('button');
-  key.setAttribute('class', 'keyboard__button');
-
-  const longButtons = ['CapsLock', 'Enter', 'Shift', 'Backspace'];
-  if (longButtons.includes(button)) {
-    key.classList.add('keyboard__button_long');
-  }
-  if (button === 'Space') {
-    key.classList.add('keyboard__button_space');
-  }
-
-  key.textContent = button;
-  return key;
-};
-
-const createKeyboardRow = (keyRow) => {
-  const keyboardRow = document.createElement('div');
-  keyboardRow.setAttribute('class', 'keyboard__row');
-  keyRow.forEach((button) => keyboardRow.appendChild(createButton(button)));
-  return keyboardRow;
-};
-
-function detectOS() {
+const detectOS = () => {
   const userAgent = navigator.userAgent.toLowerCase();
   const os = (userAgent.indexOf('mac') !== -1) ? 'MacOS' : 'Windows';
   return os;
-}
+};
 
-function createOSInfoParagraph() {
+const createOSInfoParagraph = () => {
   const osInfo = document.createElement('p');
-  osInfo.setAttribute('class', 'text');
+  osInfo.classList.add('text');
   osInfo.textContent = `This virtual keyboard was created on ${detectOS()}`;
   return osInfo;
-}
+};
 
-function renderPage() {
-  removeKeyboard();
+const createContainer = () => {
+  const container = document.createElement('div');
+  container.classList.add('container');
+  return container;
+};
+
+const createTextArea = () => {
+  const textarea = document.createElement('textarea');
+  textarea.classList.add('text-area');
+  return textarea;
+};
+
+const createKeyboard = () => {
+  const setButtonClasses = (key, button) => {
+    const longButtons = ['CapsLock', 'Enter', 'Shift', 'Backspace'];
+    if (longButtons.includes(button)) {
+      key.classList.add('keyboard__button_long');
+    }
+    if (button === 'Space') {
+      key.classList.add('keyboard__button_space');
+    }
+  };
+
+  const createButton = (button) => {
+    const key = document.createElement('button');
+    key.classList.add('keyboard__button');
+    setButtonClasses(key, button);
+    key.textContent = button;
+    return key;
+  };
+
+  const createKeyboardRow = (keyRow) => {
+    const keyboardRow = document.createElement('div');
+    keyboardRow.classList.add('keyboard__row');
+    keyRow.forEach((button) => keyboardRow.appendChild(createButton(button)));
+    return keyboardRow;
+  };
+
+  const keyboard = document.createElement('div');
+  keyboard.classList.add('keyboard');
 
   const keyboardLayout = (currentLayout === 'english' ? englishLayout : russianLayout);
-  const container = document.createElement('div');
-  const textarea = document.createElement('textarea');
-  const keyboard = document.createElement('div');
-  const osInfoParagraph = createOSInfoParagraph();
-  const switchCombination = document.createElement('p');
-  const script = document.querySelector('.main-script');
-
-  textarea.focus();
-
-  container.setAttribute('class', 'container');
-  textarea.setAttribute('class', 'text-area');
-  keyboard.setAttribute('class', 'keyboard');
-  switchCombination.setAttribute('class', 'text');
-
-  switchCombination.textContent = 'Press Shift + Alt to switch layout';
-
   keyboardLayout.forEach((keyboardRow) => keyboard.appendChild(createKeyboardRow(keyboardRow)));
 
-  container.appendChild(textarea);
+  return keyboard;
+};
+
+const createSwitchCombination = () => {
+  const switchCombination = document.createElement('p');
+  switchCombination.classList.add('text');
+  switchCombination.textContent = 'Press Shift + Alt to switch layout';
+  return switchCombination;
+};
+
+const createPageContainer = () => {
+  const container = createContainer();
+  const textArea = createTextArea();
+  const keyboard = createKeyboard();
+  const osInfoParagraph = createOSInfoParagraph();
+  const switchCombination = createSwitchCombination();
+
+  container.appendChild(textArea);
   container.appendChild(keyboard);
   container.appendChild(osInfoParagraph);
   container.appendChild(switchCombination);
 
-  document.body.insertBefore(container, script);
-}
+  return container;
+};
 
-const changeLanguage = () => {
-  currentLayout = currentLayout === 'english' ? 'russian' : 'english';
+const renderPage = () => {
+  removeKeyboard();
+  const pageContainer = createPageContainer();
+  const script = document.querySelector('.main-script');
+  document.body.insertBefore(pageContainer, script);
+};
+
+const switchLayout = () => {
+  currentLayout = (currentLayout === 'english' ? 'russian' : 'english');
   localStorage.setItem('keyboardLayout', currentLayout);
   renderPage();
 };
 
 document.addEventListener('keydown', (event) => {
-  if (event.altKey && event.shiftKey) changeLanguage();
+  if (event.altKey && event.shiftKey) switchLayout();
 });
 
 renderPage();
