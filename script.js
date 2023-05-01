@@ -354,43 +354,43 @@ const createTextArea = () => {
   return textArea;
 };
 
+const setButtonClasses = (key, button) => {
+  const longButtons = ['CapsLock', 'Enter', 'Shift', 'Backspace'];
+  if (longButtons.includes(button)) {
+    key.classList.add('keyboard__button_long');
+  }
+  if (button === ' ') {
+    key.classList.add('keyboard__button_space');
+  }
+};
+
+const createButton = (buttonObj) => {
+  const button = currentLayout === 'english' ? buttonObj.en.text : buttonObj.ru.text;
+  const key = document.createElement('button');
+  key.classList.add('keyboard__button');
+  key.id = buttonObj.id;
+  setButtonClasses(key, button);
+  key.textContent = button;
+
+  key.addEventListener('mousedown', () => {
+    key.classList.add('keyboard__button_active');
+  });
+
+  key.addEventListener('mouseup', () => {
+    key.classList.remove('keyboard__button_active');
+  });
+
+  return key;
+};
+
+const createKeyboardRow = (keyRow) => {
+  const keyboardRow = document.createElement('div');
+  keyboardRow.classList.add('keyboard__row');
+  keyRow.forEach((buttonObj) => keyboardRow.appendChild(createButton(buttonObj)));
+  return keyboardRow;
+};
+
 const createKeyboard = () => {
-  const setButtonClasses = (key, button) => {
-    const longButtons = ['CapsLock', 'Enter', 'Shift', 'Backspace'];
-    if (longButtons.includes(button)) {
-      key.classList.add('keyboard__button_long');
-    }
-    if (button === ' ') {
-      key.classList.add('keyboard__button_space');
-    }
-  };
-
-  const createButton = (buttonObj) => {
-    const button = currentLayout === 'english' ? buttonObj.en.text : buttonObj.ru.text;
-    const key = document.createElement('button');
-    key.classList.add('keyboard__button');
-    key.id = buttonObj.id;
-    setButtonClasses(key, button);
-    key.textContent = button;
-
-    key.addEventListener('mousedown', () => {
-      key.classList.add('keyboard__button_active');
-    });
-
-    key.addEventListener('mouseup', () => {
-      key.classList.remove('keyboard__button_active');
-    });
-
-    return key;
-  };
-
-  const createKeyboardRow = (keyRow) => {
-    const keyboardRow = document.createElement('div');
-    keyboardRow.classList.add('keyboard__row');
-    keyRow.forEach((buttonObj) => keyboardRow.appendChild(createButton(buttonObj)));
-    return keyboardRow;
-  };
-
   const keyboard = document.createElement('div');
   keyboard.classList.add('keyboard');
 
