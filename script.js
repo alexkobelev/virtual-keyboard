@@ -364,6 +364,17 @@ const setButtonClasses = (key, button) => {
   }
 };
 
+const inputSymbol = (symbol) => {
+  const textArea = document.querySelector('.text-area');
+  const { selectionStart, selectionEnd } = textArea;
+  textArea.value = textArea.value.substring(0, selectionStart)
+    + symbol
+    + textArea.value.substring(selectionEnd);
+  textArea.selectionEnd = selectionStart + symbol.length;
+  textArea.selectionStart = textArea.selectionEnd;
+  textArea.focus();
+};
+
 const createButton = (buttonObj) => {
   const button = currentLayout === 'english' ? buttonObj.en.text : buttonObj.ru.text;
   const key = document.createElement('button');
@@ -378,6 +389,11 @@ const createButton = (buttonObj) => {
 
   key.addEventListener('mouseup', () => {
     key.classList.remove('keyboard__button_active');
+  });
+
+  key.addEventListener('mousedown', () => {
+    key.classList.add('keyboard__button_active');
+    inputSymbol(button);
   });
 
   return key;
